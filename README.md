@@ -14,7 +14,7 @@ This entire frontend architecture was rebuilt from zero to a high-fidelity deplo
 
 ## 📸 Preview
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/e149166a-7f4c-48fe-9ee8-302c8ae67cde" 
+  <img src="https://github.com/user-attachments/assets/9fe1cfd0-b42d-4390-91bf-2ae8c0446966"
        alt="Login page" 
        style="max-width: 700px; width: 100%; height: auto; border-radius: 8px;">
 </p>
@@ -82,12 +82,3 @@ To explore the different departmental dashboards, select your desired role from 
 ```bash
 python3 app.py
 ```
----
-
-## 🔑 Access & Implementation
-> **Note:** Every single page and feature for **every role** has been fully implemented.
-
-To explore the different departmental dashboards, select your desired role from the landing page and use the following default credentials:
-
-* **Username:** `aaaa`
-* **Password:** `aaaa`
