@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Logistics Dashboard Styling */
+  .logistics-card {
+    border: none;
+    border-radius: 12px;
+    background: #ffffff;
+  }
+  .form-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+  .destination-icon {
+    background: #f8f9fa;
+    color: #0d6efd;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .date-badge {
+    background: #eef2ff;
+    color: #4338ca;
+    font-weight: 600;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+  }
+  .status-tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .table-delivery thead th {
+    background-color: #fcfcfd;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    border-bottom: 1px solid #f1f5f9;
+  }
+</style>
+
+<div class="row g-4 animate-fade-in">
+  <div class="col-lg-5 col-xl-4">
+    <div class="card shadow-sm logistics-card">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-4">
+          <div class="bg-primary text-white rounded-circle p-2 me-3 shadow-sm">
+            <i class="bi bi-calendar-check h4 mb-0"></i>
+          </div>
+          <div>
+            <h2 class="h4 mb-0 fw-bold">Schedule Delivery</h2>
+            <p class="text-muted small mb-0">Logistics Planning</p>
+          </div>
+        </div>
+
+        <form method="post">
+          <span class="form-section-title">Shipping Details</span>
+          
+          <div class="mb-3">
+            <label class="form-label fw-medium small">Destination Hub</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-geo-alt"></i></span>
+              <input class="form-control border-start-0 ps-0" name="destination" placeholder="e.g. Central Warehouse" required />
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-medium small">Expected Arrival Date</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-clock"></i></span>
+              <input type="date" class="form-control border-start-0 ps-0" name="scheduled_date" required />
+            </div>
+          </div>
+
+          <button class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+            <i class="bi bi-plus-lg me-2"></i>Add to Schedule
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7 col-xl-8">
+    <div class="card shadow-sm logistics-card h-100">
+      <div class="card-header bg-white py-3 border-0">
+        <h3 class="h5 mb-0 fw-bold">Upcoming Shipments</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle table-delivery mb-0">
+          <thead>
+            <tr>
+              <th class="ps-4">Destination</th>
+              <th>Departure Date</th>
+              <th>Status</th>
+              <th>Manager</th>
+              <th class="text-end pe-4">Track</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for schedule in schedules %}
+            <tr>
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div class="destination-icon me-3">
+                    <i class="bi bi-building"></i>
+                  </div>
+                  <span class="fw-semibold text-dark">{{ schedule.destination }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="date-badge">
+                  <i class="bi bi-calendar3 me-1"></i> {{ schedule.scheduled_date.strftime('%Y-%m-%d') }}
+                </span>
+              </td>
+              <td>
+                <span class="status-tag border text-uppercase bg-light">
+                   {{ schedule.status }}
+                </span>
+              </td>
+              <td>
+                <div class="small text-muted fw-medium">{{ schedule.manager }}</div>
+              </td>
+              <td class="text-end pe-4">
+                <a href="#" class="btn btn-sm btn-outline-primary rounded-pill px-3">Details</a>
+              </td>
+            </tr>
+            {% endfor %}
+            {% if not schedules %}
+            <tr>
+              <td colspan="5" class="text-center py-5">
+                <i class="bi bi-truck-flatbed d-block h1 text-light mb-3"></i>
+                <p class="text-muted">No scheduled deliveries on the horizon.</p>
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4">
+  <a class="btn btn-link text-muted text-decoration-none p-0" href="{{ url_for('home') }}">
+    <i class="bi bi-chevron-left"></i> Return to Fleet Overview
+  </a>
+</div>
+{% endblock %}

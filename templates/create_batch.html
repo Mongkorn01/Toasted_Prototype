@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Form Styling */
+  .entry-card {
+    border: none;
+    border-top: 4px solid #0d6efd;
+    border-radius: 12px;
+  }
+  .form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+    border-color: #0d6efd;
+  }
+
+  /* Table & Status Styling */
+  .batch-table-card {
+    border: none;
+    border-radius: 12px;
+  }
+  .status-pill {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.4em 0.8em;
+    border-radius: 50px;
+  }
+  .status-active { background-color: #e6f4ea; color: #1e7e34; }
+  .status-pending { background-color: #fff3cd; color: #856404; }
+  
+  .creator-chip {
+    display: inline-flex;
+    align-items: center;
+    background: #f1f3f5;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: #495057;
+  }
+</style>
+
+<div class="row g-4 animate-fade-in">
+  <div class="col-lg-5 col-xl-4">
+    <div class="card shadow-sm entry-card">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-4">
+          <div class="bg-primary text-white rounded-3 p-2 me-3">
+            <i class="bi bi-plus-circle-fill h4 mb-0"></i>
+          </div>
+          <h2 class="h4 mb-0 fw-bold">Create Batch</h2>
+        </div>
+        
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label fw-semibold text-muted small text-uppercase">Batch Identifier</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-tag"></i></span>
+              <input class="form-control border-start-0" name="batch_name" placeholder="e.g. BATCH-2026-001" required />
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            <label class="form-label fw-semibold text-muted small text-uppercase">Pharmaceutical Product</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-capsule"></i></span>
+              <input class="form-control border-start-0" name="drug_name" placeholder="e.g. Paracetamol 500mg" required />
+            </div>
+          </div>
+          
+          <button class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+            <i class="bi bi-play-fill me-1"></i> Initialize Production
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7 col-xl-8">
+    <div class="card shadow-sm batch-table-card">
+      <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+        <h3 class="h5 mb-0 fw-bold">Ongoing & Recent Batches</h3>
+        <i class="bi bi-three-dots-vertical text-muted"></i>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">Batch ID</th>
+              <th>Product</th>
+              <th>Status</th>
+              <th>Authorized By</th>
+              <th class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for batch in batches %}
+            <tr>
+              <td class="ps-4 fw-bold text-primary">{{ batch.batch_name }}</td>
+              <td>{{ batch.drug_name }}</td>
+              <td>
+                <span class="status-pill {% if batch.status|lower == 'active' %}status-active{% else %}status-pending{% endif %}">
+                  {{ batch.status }}
+                </span>
+              </td>
+              <td>
+                <div class="creator-chip">
+                  <i class="bi bi-person me-1"></i> {{ batch.created_by }}
+                </div>
+              </td>
+              <td class="text-end pe-4">
+                <button class="btn btn-light btn-sm rounded-circle"><i class="bi bi-eye"></i></button>
+              </td>
+            </tr>
+            {% endfor %}
+            {% if not batches %}
+            <tr>
+              <td colspan="5" class="text-center py-5 text-muted italic">
+                <i class="bi bi-inbox d-block h1 opacity-25"></i>
+                No active production batches found.
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <a class="btn btn-link text-decoration-none text-secondary p-0" href="{{ url_for('home') }}">
+        <i class="bi bi-chevron-left me-1"></i> Back to Control Panel
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Analytics Styling */
+  .forecast-card {
+    border: none;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+  }
+  .input-focus-section {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid #e2e8f0;
+  }
+  .forecast-header {
+    color: #1e293b;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .metric-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+  }
+  .table-forecast thead th {
+    background-color: #ffffff;
+    border-bottom: 2px solid #f1f5f9;
+    color: #475569;
+    font-size: 0.8rem;
+    padding: 1rem;
+  }
+  .forecast-value {
+    font-family: 'JetBrains Mono', 'Monaco', monospace;
+    font-weight: 600;
+    color: #0d6efd;
+  }
+  .forecast-icon-bg {
+    width: 48px;
+    height: 48px;
+    background: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+  }
+</style>
+
+<div class="container py-2">
+  <div class="card forecast-card">
+    <div class="card-body p-4 p-md-5">
+      
+      <div class="d-flex align-items-center mb-5">
+        <div class="forecast-icon-bg me-3">
+          <i class="bi bi-graph-up-arrow h4 mb-0"></i>
+        </div>
+        <div>
+          <h2 class="forecast-header mb-1">Demand Forecasting</h2>
+          <p class="text-muted mb-0">Algorithmic planning based on estimated monthly requirements.</p>
+        </div>
+      </div>
+
+      <div class="input-focus-section mb-5">
+        <form method="post" class="row g-3 align-items-end">
+          <div class="col-md-8">
+            <label class="metric-label">Projected Monthly Volume</label>
+            <div class="input-group input-group-lg">
+              <span class="input-group-text bg-white border-end-0 text-muted">
+                <i class="bi bi-calculator"></i>
+              </span>
+              <input class="form-control border-start-0 ps-0" 
+                     name="demand_input" 
+                     type="number"
+                     placeholder="Enter units (e.g. 5000)" 
+                     value="{{ demand_input or '' }}" 
+                     required />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <button class="btn btn-primary btn-lg w-100 fw-bold shadow-sm rounded-3">
+              Generate Forecast
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {% if forecast_items %}
+      <div class="animate-fade-in">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="h6 fw-bold text-uppercase mb-0 text-secondary">Projections Summary</h4>
+          <span class="badge bg-soft-primary text-primary border border-primary-subtle px-3 py-2">
+            Base Input: {{ demand_input }}
+          </span>
+        </div>
+        
+        <div class="table-responsive border rounded-3">
+          <table class="table table-hover table-forecast mb-0">
+            <thead>
+              <tr>
+                <th class="ps-4">Component/Item Name</th>
+                <th class="text-end pe-4">Forecasted Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in forecast_items %}
+              <tr>
+                <td class="ps-4">
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-box me-2 text-muted"></i>
+                    <span class="fw-medium text-dark">{{ item.name }}</span>
+                  </div>
+                </td>
+                <td class="text-end pe-4">
+                  <span class="forecast-value h6 mb-0">{{ "{:,}".format(item.forecast|int) if item.forecast|int else item.forecast }}</span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="alert alert-info mt-4 border-0 bg-light">
+          <div class="d-flex">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            <small>These figures are estimates generated for internal procurement and production scheduling purposes.</small>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="mt-5 pt-3 border-top">
+        <a class="btn btn-link text-decoration-none text-muted p-0" href="{{ url_for('home') }}">
+          <i class="bi bi-arrow-left me-1"></i> Back to Resource Management
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

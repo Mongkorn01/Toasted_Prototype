@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Register Portal Styles */
+  .auth-container {
+    padding-top: 3vh;
+  }
+  .register-card {
+    border: none;
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden;
+  }
+  .register-header {
+    background: linear-gradient(135deg, #6610f2 0%, #0d6efd 100%);
+    color: white;
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+  .role-preview-box {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  .role-icon {
+    width: 48px;
+    height: 48px;
+    background: #eef2ff;
+    color: #4f46e5;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-right: 1rem;
+  }
+  .form-floating > .form-control:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.1);
+  }
+  .btn-register {
+    background-color: #4f46e5;
+    border: none;
+    padding: 0.8rem;
+    font-weight: 700;
+    border-radius: 12px;
+    transition: transform 0.2s;
+  }
+  .btn-register:hover {
+    background-color: #4338ca;
+    transform: translateY(-1px);
+  }
+  .back-link {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .back-link:hover {
+    color: #64748b;
+  }
+</style>
+
+<div class="row justify-content-center auth-container animate-fade-in">
+  <div class="col-md-8 col-lg-6 col-xl-5">
+    <div class="card register-card">
+      
+      <div class="register-header">
+        <i class="bi bi-person-plus-fill h1 mb-2"></i>
+        <h2 class="fw-bold mb-0">Join Toasted ERP</h2>
+        <p class="opacity-75 mb-0">Create your enterprise identity</p>
+      </div>
+
+      <div class="card-body p-4 p-md-5">
+        
+        {% if selected_role %}
+        <div class="role-preview-box">
+          <div class="role-icon">
+            <i class="bi bi-patch-check-fill"></i>
+          </div>
+          <div>
+            <small class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Provisioning Account For</small>
+            <div class="fw-bold text-dark h5 mb-0">{{ selected_role }}</div>
+          </div>
+        </div>
+        {% else %}
+        <div class="alert alert-secondary border-0 d-flex align-items-center mb-4 py-3">
+          <i class="bi bi-info-circle-fill me-3 h5 mb-0"></i>
+          <span class="small">Standard registration enabled. Please select your organizational department below.</span>
+        </div>
+        {% endif %}
+
+        <form method="post">
+          {% if selected_role %}
+          <input type="hidden" name="role" value="{{ selected_role }}" />
+          {% endif %}
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="regUsername" name="username" placeholder="Username" required>
+            <label for="regUsername"><i class="bi bi-person me-2"></i>Choose Username</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="regPassword" name="password" placeholder="Password" required>
+            <label for="regPassword"><i class="bi bi-shield-lock me-2"></i>Secure Password</label>
+          </div>
+
+          {% if not selected_role %}
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-muted text-uppercase mb-2">Assigned Department</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white"><i class="bi bi-briefcase text-muted"></i></span>
+              <select class="form-select py-3" name="role" required style="border-left: none;">
+                <option value="" disabled selected>Select your role...</option>
+                <option value="Researcher">Researcher</option>
+                <option value="Production Planner">Production Planner</option>
+                <option value="Production Manager">Production Manager</option>
+                <option value="Regulatory Affairs">Regulatory Affairs</option>
+                <option value="Warehouse Staff">Warehouse Staff</option>
+                <option value="Sales Staff">Sales Staff</option>
+                <option value="Customer">Customer</option>
+                <option value="Delivery Manager">Delivery Manager</option>
+              </select>
+            </div>
+          </div>
+          {% endif %}
+
+          <div class="d-grid gap-3 pt-2">
+            <button class="btn btn-primary btn-register shadow-sm">
+              Initialize Account <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+            
+            <div class="text-center">
+              <a href="{{ url_for('home') }}" class="back-link">
+                <i class="bi bi-chevron-left small"></i> Return to landing page
+              </a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <div class="text-muted small">
+        <i class="bi bi-shield-shaded me-1"></i> 
+        Encryption standards compliant with Pharma-IT protocols.
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

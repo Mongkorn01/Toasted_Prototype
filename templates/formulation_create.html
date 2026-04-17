@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Formulation Lab Styling */
+  .lab-card {
+    border: none;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08) !important;
+  }
+  .encryption-notice {
+    background-color: #f0fdf4;
+    border: 1px solid #dcfce7;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+  .payload-area {
+    font-family: 'JetBrains Mono', 'Monaco', monospace;
+    font-size: 0.9rem;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    line-height: 1.6;
+    color: #334155;
+    resize: vertical;
+  }
+  .payload-area:focus {
+    background-color: #ffffff;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.05);
+  }
+  .form-label-caps {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+  }
+  .status-dot-pulse {
+    width: 8px;
+    height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+    box-shadow: 0 0 0 rgba(34, 197, 94, 0.4);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+  }
+</style>
+
+<div class="row justify-content-center animate-fade-in py-4">
+  <div class="col-md-10 col-lg-8">
+    <div class="card lab-card">
+      <div class="card-body p-4 p-md-5">
+        
+        <div class="d-flex justify-content-between align-items-start mb-4">
+          <div>
+            <h3 class="fw-bold mb-1">
+              <i class="bi bi-shield-lock-fill text-primary me-2"></i>New Secure Formulation
+            </h3>
+            <p class="text-muted small">Enter precise chemical ratios and processing instructions.</p>
+          </div>
+          <div class="d-flex align-items-center bg-light px-3 py-1 rounded-pill border">
+            <span class="status-dot-pulse"></span>
+            <span class="small fw-medium text-secondary">Secure Environment</span>
+          </div>
+        </div>
+
+        <div class="encryption-notice d-flex align-items-center mb-4">
+          <i class="bi bi-info-circle-fill text-success h5 mb-0 me-3"></i>
+          <p class="small text-success-emphasis mb-0">
+            <strong>AES-256 Encryption active:</strong> All payload data will be encrypted at the database layer. Once saved, this data is restricted based on Regulatory Affairs permissions.
+          </p>
+        </div>
+
+        <form method="post">
+          <div class="mb-4">
+            <label class="form-label form-label-caps">Generic or Brand Name</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-capsule"></i></span>
+              <input class="form-control border-start-0 ps-0 fw-semibold" 
+                     name="name" 
+                     placeholder="e.g. Lisinopril 10mg Tablets" 
+                     required 
+                     maxlength="120" />
+            </div>
+          </div>
+
+          <div class="mb-5">
+            <label class="form-label form-label-caps d-flex justify-content-between">
+              Formulation Payload
+              <span class="text-lowercase fw-normal opacity-75">Text or JSON format</span>
+            </label>
+            <textarea class="form-control payload-area" 
+                      name="payload" 
+                      rows="8" 
+                      placeholder="Enter ingredients, temperature requirements, and mixing protocols..." 
+                      required></textarea>
+            <div class="form-text mt-2 small">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i> Ensure all units are in metric (mg/ml) per standard protocols.
+            </div>
+          </div>
+
+          <div class="row pt-4 border-top">
+            <div class="col-6 col-sm-auto">
+              <a class="btn btn-outline-secondary px-4 py-2 fw-medium rounded-pill w-100" href="{{ url_for('home') }}">
+                <i class="bi bi-arrow-left me-1"></i> Discard
+              </a>
+            </div>
+            <div class="col-6 col-sm-auto ms-sm-auto">
+              <button class="btn btn-primary px-4 py-2 fw-bold rounded-pill w-100 shadow-sm">
+                <i class="bi bi-lock-fill me-1"></i> Encrypt and Save
+              </button>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

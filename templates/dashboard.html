@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Subtle hover effects and custom styling */
+  .hover-lift {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  .hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important;
+  }
+  .role-icon {
+    font-size: 2rem;
+    opacity: 0.8;
+  }
+  .gradient-text {
+    background: linear-gradient(45deg, #0d6efd, #6610f2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+</style>
+
+<div class="container py-5">
+  {% if user %}
+  <div class="row mb-5 align-items-center">
+    <div class="col-auto">
+      <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 64px; height: 64px;">
+        <span class="h3 mb-0">{{ user.username[0].upper() }}</span>
+      </div>
+    </div>
+    <div class="col">
+      <h1 class="h2 fw-bold mb-0">Welcome back, <span class="gradient-text">{{ user.username }}</span></h1>
+      <p class="text-muted mb-0">Logged in as <span class="badge bg-light text-primary border">{{ user.role }}</span></p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    {% for action in actions %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card h-100 border-0 shadow-sm hover-lift">
+        <div class="card-body p-4 d-flex flex-column">
+          <div class="mb-3 text-primary">
+            <i class="bi bi-rocket-takeoff-fill h4"></i>
+          </div>
+          <h5 class="card-title fw-bold">{{ action.label }}</h5>
+          <p class="card-text text-muted flex-grow-1">Execute your {{ user.role.lower() }} duties and manage ongoing tasks.</p>
+          <a href="{{ url_for(action.endpoint) }}" class="btn btn-primary w-100 mt-3 rounded-pill">
+            Launch Task
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="text-center mb-5">
+    <h1 class="display-5 fw-bold">Portal Access</h1>
+    <p class="text-muted mx-auto" style="max-width: 500px;">Please select your role below to access the management dashboard or register for a new account.</p>
+  </div>
+
+  <div class="row g-4 justify-content-center">
+    {% for role in roles %}
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card h-100 border-0 shadow-sm hover-lift text-center">
+        <div class="card-body p-4">
+          <div class="mb-3 py-3 bg-light rounded-3">
+             <span class="h5 mb-0 d-block">{{ role }}</span>
+          </div>
+          <p class="small text-muted mb-4">Dedicated access for authorized {{ role.lower() }} members.</p>
+          
+          <div class="d-grid gap-2">
+            <a href="{{ url_for('login', role=role) }}" class="btn btn-outline-dark btn-sm rounded-pill">Sign In</a>
+            {% if role == 'Customer' %}
+            <a href="{{ url_for('register', role=role) }}" class="btn btn-primary btn-sm rounded-pill">Create Account</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Inventory Module Styles */
+  .inventory-card {
+    border: none;
+    border-radius: 12px;
+  }
+  .form-control-custom {
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    border: 1px solid #e2e8f0;
+  }
+  .form-control-custom:focus {
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+  }
+  .table-inventory thead th {
+    background-color: #f8fafc;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    padding: 1rem;
+    border-bottom: 2px solid #edf2f7;
+  }
+  .stock-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: #1e293b;
+  }
+  .reserve-badge {
+    background-color: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #ffedd5;
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .timestamp-text {
+    font-size: 0.75rem;
+    color: #94a3b8;
+  }
+  .update-header {
+    background: linear-gradient(to right, #f8fafc, #ffffff);
+    border-left: 4px solid #0d6efd;
+    padding-left: 1rem;
+  }
+</style>
+
+<div class="row g-4 animate-fade-in">
+  <div class="col-lg-5 mb-4">
+    <div class="card shadow-sm inventory-card h-100">
+      <div class="card-body p-4">
+        <div class="update-header mb-4">
+          <h4 class="fw-bold mb-1">Update Inventory</h4>
+          <p class="text-muted small">Adjust stock levels and reserve allocations.</p>
+        </div>
+        
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-uppercase text-secondary">Drug Name</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
+              <input class="form-control form-control-custom border-start-0 ps-0" 
+                     name="drug_name" 
+                     placeholder="Search or enter drug..." 
+                     required 
+                     maxlength="120" />
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-6">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Quantity Change</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-plus-slash-minus"></i></span>
+                <input type="number" class="form-control form-control-custom border-start-0 ps-0" 
+                       name="quantity" value="0" min="0" />
+              </div>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold text-uppercase text-secondary">Reserve Set</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-bookmark-fill"></i></span>
+                <input type="number" class="form-control form-control-custom border-start-0 ps-0" 
+                       name="reserve" value="0" min="0" />
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary w-100 py-2 fw-bold rounded-3 shadow-sm">
+            <i class="bi bi-arrow-repeat me-2"></i> Commit Changes
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card shadow-sm inventory-card p-0 overflow-hidden">
+      <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+        <h4 class="h5 mb-0 fw-bold">Current Stock Ledger</h4>
+        <span class="badge bg-light text-dark border fw-normal">{{ items|length }} SKU Items</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover table-inventory mb-0">
+          <thead>
+            <tr>
+              <th class="ps-4">Drug Information</th>
+              <th>Available</th>
+              <th>Reserved</th>
+              <th>Last Handler</th>
+              <th class="pe-4">Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+            <tr>
+              <td class="ps-4">
+                <div class="fw-bold text-dark">{{ item.drug_name }}</div>
+                <div class="text-muted small">SKU-{{ loop.index + 5000 }}</div>
+              </td>
+              <td>
+                <span class="stock-count h6 mb-0">{{ item.quantity }}</span>
+              </td>
+              <td>
+                <span class="reserve-badge">
+                  <i class="bi bi-lock-fill small"></i> {{ item.reserved }}
+                </span>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="bg-soft-secondary text-secondary rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.7rem; background: #f1f5f9;">
+                    {{ item.updated_by[0].upper() if item.updated_by else '?' }}
+                  </div>
+                  <span class="small">{{ item.updated_by }}</span>
+                </div>
+              </td>
+              <td class="pe-4">
+                <div class="timestamp-text">
+                  {{ item.updated_at.strftime('%Y-%m-%d') }}<br>
+                  <span class="opacity-75">{{ item.updated_at.strftime('%H:%M') }}</span>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+            {% if not items %}
+            <tr>
+              <td colspan="5" class="text-center py-5">
+                <i class="bi bi-box-seam h1 d-block text-light mb-3"></i>
+                <p class="text-muted">No inventory records available.</p>
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4">
+  <a class="btn btn-link text-decoration-none text-secondary p-0" href="{{ url_for('home') }}">
+    <i class="bi bi-arrow-left me-1"></i> Return to Main Dashboard
+  </a>
+</div>
+{% endblock %}

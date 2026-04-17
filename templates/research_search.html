@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Research Discovery Styles */
+  .search-card {
+    border: none;
+    border-radius: 20px;
+    background: #ffffff;
+  }
+  .search-focus-area {
+    background: #f1f5f9;
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .search-input-lg {
+    border-radius: 12px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    border: 2px solid #e2e8f0;
+    transition: all 0.2s ease;
+  }
+  .search-input-lg:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+  }
+  .results-table thead th {
+    background-color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    border-bottom: 2px solid #f1f5f9;
+    padding: 1rem;
+  }
+  .payload-cell {
+    font-family: 'JetBrains Mono', 'Monaco', monospace;
+    font-size: 0.8rem;
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #475569;
+  }
+  .restricted-badge {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fee2e2;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .research-tag {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 50px;
+  }
+</style>
+
+<div class="container py-2 animate-fade-in">
+  <div class="card search-card shadow-sm">
+    <div class="card-body p-4 p-md-5">
+      
+      <div class="d-flex align-items-center mb-4">
+        <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-3 me-3">
+          <i class="bi bi-search-heart h3 mb-0"></i>
+        </div>
+        <div>
+          <h2 class="fw-bold mb-1">Research Assets</h2>
+          <p class="text-muted mb-0">Query the central formulation repository for validated assets.</p>
+        </div>
+      </div>
+
+      <div class="search-focus-area border">
+        <form method="post" class="row g-3">
+          <div class="col-md-9">
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 text-muted px-3">
+                <i class="bi bi-search"></i>
+              </span>
+              <input class="form-control border-start-0 search-input-lg ps-0" 
+                     name="query" 
+                     placeholder="Search by formulation name or chemical ID..." 
+                     value="{{ query or '' }}" 
+                     autofocus />
+            </div>
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-primary btn-lg w-100 fw-bold rounded-3 shadow-sm">
+              Run Query
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {% if results %}
+      <div class="mb-3 d-flex justify-content-between align-items-center">
+        <h4 class="h6 fw-bold text-uppercase text-secondary mb-0">Discovery Results</h4>
+        <span class="small text-muted">Showing {{ results|length }} matches</span>
+      </div>
+
+      <div class="table-responsive border rounded-3 overflow-hidden">
+        <table class="table table-hover align-middle results-table mb-0">
+          <thead>
+            <tr>
+              <th class="ps-4">Asset Name</th>
+              <th>Primary Author</th>
+              <th>Registration Date</th>
+              <th>Data Preview</th>
+              <th class="text-end pe-4">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for formulation in results %}
+            <tr>
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-file-earmark-binary text-primary me-2"></i>
+                  <span class="fw-bold text-dark">{{ formulation.name }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="research-tag">
+                  <i class="bi bi-person-circle me-1"></i> {{ formulation.created_by }}
+                </span>
+              </td>
+              <td>
+                <div class="small text-muted">{{ formulation.created_at.strftime('%b %d, %Y') }}</div>
+              </td>
+              <td>
+                {% if formulation.payload %}
+                <div class="payload-cell">{{ formulation.payload }}</div>
+                {% else %}
+                <span class="restricted-badge"><i class="bi bi-lock-fill me-1"></i> Restricted</span>
+                {% endif %}
+              </td>
+              <td class="text-end pe-4">
+                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3">Open</button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% elif query %}
+      <div class="text-center py-5 border rounded-3 bg-light">
+        <i class="bi bi-slash-circle h1 text-muted opacity-25 d-block mb-3"></i>
+        <p class="text-muted fw-medium">No assets found matching "{{ query }}"</p>
+      </div>
+      {% endif %}
+
+      <div class="mt-5 pt-3 border-top">
+        <a class="btn btn-link text-decoration-none text-muted p-0" href="{{ url_for('home') }}">
+          <i class="bi bi-chevron-left me-1"></i> Return to Research Home
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

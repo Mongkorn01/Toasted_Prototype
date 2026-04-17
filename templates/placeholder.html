@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Informational Page Aesthetics */
+  .info-wrapper {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .info-card {
+    border: none;
+    border-radius: 20px;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Decorative accent */
+  .info-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #0d6efd, #6610f2);
+  }
+  .icon-box {
+    width: 64px;
+    height: 64px;
+    background: #f8f9fa;
+    color: #6c757d;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .info-title {
+    font-weight: 800;
+    color: #1e293b;
+    letter-spacing: -0.02em;
+  }
+  .info-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #64748b;
+  }
+  .btn-nav {
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.2s;
+  }
+  .btn-nav:hover {
+    transform: translateY(-2px);
+  }
+</style>
+
+<div class="info-wrapper animate-fade-in">
+  <div class="col-12 col-md-8 col-lg-6">
+    <div class="card info-card shadow-lg">
+      <div class="card-body p-4 p-md-5">
+        
+        <div class="icon-box">
+          <i class="bi bi-info-circle"></i>
+        </div>
+
+        <h2 class="info-title mb-3">{{ title }}</h2>
+        
+        <p class="info-description mb-5">
+          {{ description }}
+        </p>
+
+        <div class="pt-4 border-top d-flex flex-column flex-sm-row gap-3">
+          <a class="btn btn-light border btn-nav flex-grow-1" href="{{ url_for('home') }}">
+            <i class="bi bi-arrow-left me-2"></i>Previous Page
+          </a>
+          <a class="btn btn-outline-primary btn-nav flex-grow-1" href="{{ url_for('home') }}">
+            <i class="bi bi-grid-fill me-2"></i>Back to Dashboard
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <small class="text-muted">Need assistance? Contact the <span class="fw-bold text-primary">Toasted ERP</span> Support Team.</small>
+    </div>
+  </div>
+</div>
+{% endblock %}

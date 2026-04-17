@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Custom log styles */
+  .audit-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .table thead th {
+    background-color: #f8f9fa;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    color: #6c757d;
+    border-top: none;
+    padding: 1rem;
+  }
+  .table tbody td {
+    vertical-align: middle;
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+  .timestamp-cell {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.85rem;
+    color: #495057;
+  }
+  .action-badge {
+    font-weight: 500;
+    padding: 0.4em 0.8em;
+    border-radius: 6px;
+  }
+  .details-text {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+  }
+  /* Subtle row hover */
+  .table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.03);
+  }
+</style>
+
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-end mb-4">
+    <div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+          <li class="breadcrumb-item"><a href="{{ url_for('home') }}" class="text-decoration-none">Home</a></li>
+          <li class="breadcrumb-item active">Logs</li>
+        </ol>
+      </nav>
+      <h2 class="fw-bold mb-0"><i class="bi bi-shield-check me-2 text-primary"></i>Audit Trail</h2>
+    </div>
+    <span class="badge bg-light text-dark border p-2">
+      Total Events: <strong>{{ events|length }}</strong>
+    </span>
+  </div>
+
+  <div class="card shadow-sm audit-card">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Actor</th>
+            <th>Role</th>
+            <th>Action</th>
+            <th>Target</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for event in events %}
+          <tr>
+            <td class="timestamp-cell">
+              {{ event.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="bg-soft-primary text-primary rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.7rem; background: #e7f1ff;">
+                  {{ event.actor[0].upper() }}
+                </div>
+                <span class="fw-semibold">{{ event.actor }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="text-muted small">{{ event.role }}</span>
+            </td>
+            <td>
+              <span class="badge border text-dark action-badge bg-light">
+                {{ event.action }}
+              </span>
+            </td>
+            <td>
+              <code class="text-secondary small">{{ event.target }}</code>
+            </td>
+            <td>
+              <span class="details-text text-muted" title="{{ event.details }}">
+                {{ event.details }}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+          {% if not events %}
+          <tr>
+            <td colspan="6" class="text-center py-5 text-muted">
+              No audit records found.
+            </td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a class="btn btn-link text-decoration-none text-secondary p-0" href="{{ url_for('home') }}">
+      <i class="bi bi-arrow-left me-1"></i> Return to Dashboard
+    </a>
+  </div>
+</div>
+{% endblock %}

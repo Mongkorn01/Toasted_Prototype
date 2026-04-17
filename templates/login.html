@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Login Portal Specifics */
+  .auth-container {
+    padding-top: 5vh;
+  }
+  .auth-card {
+    border: none;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+  }
+  .role-indicator {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+  .role-icon-circle {
+    width: 40px;
+    height: 40px;
+    background: #0d6efd;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+  .form-floating > .form-control:focus ~ label {
+    color: #0d6efd;
+  }
+  .btn-auth {
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+  .login-footer-link {
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: #64748b;
+    transition: color 0.2s;
+  }
+  .login-footer-link:hover {
+    color: #0d6efd;
+  }
+</style>
+
+<div class="row justify-content-center auth-container animate-fade-in">
+  <div class="col-md-7 col-lg-5 col-xl-4">
+    <div class="card auth-card">
+      <div class="card-body p-4 p-md-5">
+        
+        <div class="text-center mb-4">
+          <div class="d-inline-block bg-primary bg-opacity-10 p-3 rounded-circle mb-3">
+             <i class="bi bi-shield-lock text-primary h3 mb-0"></i>
+          </div>
+          <h2 class="fw-bold text-dark">Portal Login</h2>
+          <p class="text-muted small">Enter your credentials to access the ERP</p>
+        </div>
+
+        {% if selected_role %}
+        <div class="role-indicator d-flex align-items-center mb-4">
+          <div class="role-icon-circle me-3">
+            <i class="bi bi-person-badge"></i>
+          </div>
+          <div>
+            <span class="d-block small text-muted text-uppercase fw-bold" style="letter-spacing: 0.5px;">Active Role</span>
+            <strong class="text-primary">{{ selected_role }}</strong>
+          </div>
+        </div>
+        {% else %}
+        <div class="alert alert-warning border-0 rounded-4 d-flex align-items-center mb-4">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <small>Please select a role from the home page first.</small>
+        </div>
+        {% endif %}
+
+        <form method="post">
+          {% if selected_role %}
+          <input type="hidden" name="role" value="{{ selected_role }}" />
+          {% endif %}
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control bg-light border-0" id="username" name="username" placeholder="Username" required>
+            <label for="username"><i class="bi bi-person me-2"></i>Username</label>
+          </div>
+
+          <div class="form-floating mb-4">
+            <input type="password" class="form-control bg-light border-0" id="password" name="password" placeholder="Password" required>
+            <label for="password"><i class="bi bi-key me-2"></i>Password</label>
+          </div>
+
+          <div class="d-grid gap-2 mb-4">
+            <button class="btn btn-primary btn-auth shadow-sm">
+              <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+            </button>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <a href="{{ url_for('home') }}" class="login-footer-link">
+              <i class="bi bi-arrow-left me-1"></i>Landing Page
+            </a>
+            
+            {% if selected_role %}
+            <a href="{{ url_for('reset_password', role=selected_role) }}" class="login-footer-link fw-medium text-primary">
+              Forgot password?
+            </a>
+            {% endif %}
+          </div>
+        </form>
+
+      </div>
+    </div>
+    
+    <div class="text-center mt-4">
+      <p class="text-muted small">
+        &copy; 2026 Toasted ERP Systems. <br> 
+        Secure Session Monitoring is Active.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

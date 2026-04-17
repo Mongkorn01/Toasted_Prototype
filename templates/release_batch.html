@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Quality Release Dashboard Styles */
+  .release-card {
+    border: none;
+    border-radius: 16px;
+    background: #ffffff;
+  }
+  .release-header {
+    border-bottom: 2px solid #f8fafc;
+    padding-bottom: 1.5rem;
+  }
+  .table-release thead th {
+    background-color: #f8fafc;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    border: none;
+    padding: 1.25rem 1rem;
+  }
+  .batch-id-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: #334155;
+  }
+  .status-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .status-pending { background-color: #fffbeb; color: #9a3412; border: 1px solid #fed7aa; }
+  .status-released { background-color: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+  
+  .release-btn {
+    font-weight: 600;
+    transition: all 0.2s;
+    border-radius: 8px;
+    padding: 0.4rem 1.2rem;
+  }
+  .release-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.2);
+  }
+  .action-icon {
+    font-size: 1.1rem;
+    vertical-align: middle;
+  }
+</style>
+
+<div class="container py-2 animate-fade-in">
+  <div class="card release-card shadow-sm">
+    <div class="card-body p-4 p-md-5">
+      
+      <div class="release-header mb-4 d-flex align-items-center justify-content-between">
+        <div>
+          <h2 class="fw-bold text-dark mb-1">
+            <i class="bi bi-patch-check-fill text-success me-2"></i>Quality Release Control
+          </h2>
+          <p class="text-muted mb-0">Review and authorize the commercial release of finished production batches.</p>
+        </div>
+        <div class="text-end d-none d-md-block">
+          <span class="badge bg-light text-secondary border px-3 py-2">
+            <i class="bi bi-shield-lock me-1"></i> QA Authorization Required
+          </span>
+        </div>
+      </div>
+
+      <div class="table-responsive rounded-3 border">
+        <table class="table table-hover align-middle table-release mb-0">
+          <thead>
+            <tr>
+              <th class="ps-4">Batch Identifier</th>
+              <th>Pharmaceutical Product</th>
+              <th>Current Status</th>
+              <th class="text-end pe-4">Final Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for batch in batches %}
+            <tr>
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                  <div class="bg-light p-2 rounded me-3">
+                    <i class="bi bi-box-seam text-secondary"></i>
+                  </div>
+                  <span class="batch-id-text">{{ batch.batch_name }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="fw-medium text-dark">{{ batch.drug_name }}</div>
+                <div class="small text-muted">Post-Production Review</div>
+              </td>
+              <td>
+                <span class="status-badge {% if batch.status|lower == 'released' %}status-released{% else %}status-pending{% endif %}">
+                  <i class="bi {% if batch.status|lower == 'released' %}bi-check-all{% else %}bi-hourglass-split{% endif %} me-1"></i>
+                  {{ batch.status }}
+                </span>
+              </td>
+              <td class="text-end pe-4">
+                {% if batch.status|lower != 'released' %}
+                <form method="post" class="d-inline">
+                  <input type="hidden" name="batch_id" value="{{ batch.id }}" />
+                  <button class="btn btn-success release-btn shadow-sm" type="submit">
+                    <i class="bi bi-unlock-fill me-1 small"></i> Authorize Release
+                  </button>
+                </form>
+                {% else %}
+                <div class="text-success fw-bold small">
+                  <i class="bi bi-shield-check me-1"></i> VALIDATED
+                </div>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+            {% if not batches %}
+            <tr>
+              <td colspan="4" class="text-center py-5">
+                <div class="py-4">
+                  <i class="bi bi-clipboard2-check h1 text-light"></i>
+                  <p class="text-muted">No production batches are currently awaiting release.</p>
+                </div>
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-5 pt-3 border-top d-flex justify-content-between align-items-center">
+        <a class="btn btn-link text-decoration-none text-muted p-0" href="{{ url_for('home') }}">
+          <i class="bi bi-arrow-left me-1"></i> Return to Production Overview
+        </a>
+        <small class="text-muted fst-italic">
+          <i class="bi bi-info-circle me-1"></i> All release actions are logged in the Audit Trail.
+        </small>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

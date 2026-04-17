@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Portal-specific aesthetics */
+  .portal-card {
+    border: none;
+    border-radius: 16px;
+    background: #ffffff;
+  }
+  .order-form-header {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    margin: -1.25rem -1.25rem 1.5rem -1.25rem;
+    padding: 1.5rem;
+  }
+  .form-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+  .table-orders thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    color: #6c757d;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+  }
+  .status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+  }
+  .dot {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .status-pending { color: #f59e0b; }
+  .status-pending .dot { background-color: #f59e0b; }
+  .status-shipped { color: #10b981; }
+  .status-shipped .dot { background-color: #10b981; }
+</style>
+
+<div class="row g-4 animate-fade-in">
+  <div class="col-lg-5">
+    <div class="card shadow-sm portal-card h-100">
+      <div class="card-body p-4">
+        <div class="order-form-header">
+          <h2 class="h4 mb-1"><i class="bi bi-cart-plus me-2"></i>New Request</h2>
+          <p class="small mb-0 opacity-75">Submit a new procurement request to inventory.</p>
+        </div>
+        
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Select Medication</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
+              <select class="form-select border-start-0" name="drug_name" required>
+                <option value="" selected disabled>Choose product...</option>
+                {% for item in inventory_items %}
+                <option value="{{ item.drug_name }}">
+                  {{ item.drug_name }} — ({{ item.quantity }} in stock)
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Order Quantity</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-hash"></i></span>
+              <input type="number" class="form-control border-start-0" name="quantity" value="1" min="1" required />
+            </div>
+            <div class="form-text text-end">Stock limits may apply</div>
+          </div>
+
+          <button class="btn btn-primary w-100 py-3 rounded-3 shadow-sm fw-bold">
+            Confirm Order Request
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card shadow-sm portal-card">
+      <div class="card-header bg-white py-3 border-0 d-flex align-items-center">
+        <h3 class="h5 mb-0 fw-bold">Recent Activity</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle table-orders mb-0">
+          <thead>
+            <tr>
+              <th class="ps-4">Product</th>
+              <th>Qty</th>
+              <th>Current Status</th>
+              <th class="text-end pe-4">Date Requested</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr>
+              <td class="ps-4">
+                <div class="fw-bold">{{ order.drug_name }}</div>
+                <div class="small text-muted">ID: #ORD-{{ loop.index + 1000 }}</div>
+              </td>
+              <td><span class="badge bg-light text-dark border">{{ order.quantity }}</span></td>
+              <td>
+                <div class="status-indicator {% if order.status|lower == 'pending' %}status-pending{% else %}status-shipped{% endif %}">
+                  <span class="dot"></span> {{ order.status }}
+                </div>
+              </td>
+              <td class="text-end pe-4 text-muted small">
+                {{ order.created_at.strftime('%b %d, %Y') }}
+              </td>
+            </tr>
+            {% endfor %}
+            {% if not orders %}
+            <tr>
+              <td colspan="4" class="text-center py-5">
+                <div class="text-muted">
+                  <i class="bi bi-clipboard-x d-block h2 opacity-25"></i>
+                  No order history found.
+                </div>
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <a class="btn btn-outline-secondary btn-sm px-3 rounded-pill" href="{{ url_for('home') }}">
+        <i class="bi bi-arrow-left me-1"></i> Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
